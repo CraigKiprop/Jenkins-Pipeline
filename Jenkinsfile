@@ -62,7 +62,7 @@ pipeline {
             emailext (
                 subject: "Pipeline ${currentBuild.currentResult}: ${env.JOB_NAME}",
                 body: "Pipeline ${currentBuild.currentResult}: ${env.JOB_NAME}\n\nCheck attached logs.",
-                to: 'your@email.com',
+                to: 'craigkorir@email.com',
                 attachmentsPattern: '**/*.log'
             )
         }
