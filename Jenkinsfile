@@ -23,6 +23,9 @@ pipeline {
     
     post {
         always {
+            mail to: "craigkorir@gmail.com",
+                subject: "Build Status",
+                body: "Build log"
             // Define post-build actions here
             // For example, archiving artifacts and sending email notifications
         }
