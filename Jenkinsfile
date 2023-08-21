@@ -1,54 +1,54 @@
-    pipeline {
+pipeline {
     agent any
     
     stages {
         stage('Build') {
             steps {
                 // Build the code using Maven
-                sh 'mvn clean package'
+                bat 'mvn clean package'
             }
         }
         
         stage('Unit and Integration Tests') {
             steps {
                 // Run unit tests and integration tests using appropriate test automation tools
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
         
         stage('Code Analysis') {
             steps {
                 // Integrate a code analysis tool (e.g., SonarQube)
-                sh 'mvn sonar:sonar'
+                bat 'mvn sonar:sonar'
             }
         }
         
         stage('Security Scan') {
             steps {
                 // Integrate a security scanning tool (e.g., OWASP ZAP)
-                sh 'zap-cli --spider <https://github.com/CraigKiprop/Deakin-Unit-Page>'
-                sh 'zap-cli --scan <https://github.com/CraigKiprop/Deakin-Unit-Page>'
+                bat 'zap-cli --spider <your_app_url>'
+                bat 'zap-cli --scan <your_app_url>'
             }
         }
         
         stage('Deploy to Staging') {
             steps {
                 // Deploy the application to staging server (e.g., AWS EC2 instance) using Ansible
-                sh 'ansible-playbook -i inventory/staging deploy.yml'
+                bat 'ansible-playbook -i inventory/staging deploy.yml'
             }
         }
         
         stage('Integration Tests on Staging') {
             steps {
                 // Run integration tests in the staging environment
-                sh 'mvn verify -Pstaging'
+                bat 'mvn verify -Pstaging'
             }
         }
         
         stage('Deploy to Production') {
             steps {
                 // Deploy the application to production server (e.g., AWS EC2 instance) using Ansible
-                sh 'ansible-playbook -i inventory/production deploy.yml'
+                bat 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
     }
@@ -62,7 +62,7 @@
             emailext (
                 subject: "Pipeline ${currentBuild.currentResult}: ${env.JOB_NAME}",
                 body: "Pipeline ${currentBuild.currentResult}: ${env.JOB_NAME}\n\nCheck attached logs.",
-                to: 'your@email.com',
+                to: 'craigkorir@email.com',
                 attachmentsPattern: '**/*.log'
             )
         }
