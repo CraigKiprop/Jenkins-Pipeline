@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
-                //bat 'mvn clean package'
+                bat 'mvn clean package'
                 // Add actual build steps here
             }
         }
@@ -13,17 +13,17 @@ pipeline {
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
-                //sh 'mvn test'
+                sh 'mvn test'
                 // Add actual test steps here
             }
             post {
                 always {
                     
-                       mail to: "craigkorir@gmail.com",
+                        mail to: "craigkorir@gmail.com",
                         subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached"
-                        
-                
+                        body: "Unit and Integration test logs attached",
+                        attachmentsPattern: '**/*.log'
+                    
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
-                //sh 'mvn sonar:sonar'
+                sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
         }
@@ -43,11 +43,11 @@ pipeline {
             }
             post {
                 always {
-                    
-                        mail to: "craigkorir@gmail.com",
+                
+                       mail to: "craigkorir@gmail.com",
                         subject: "Security Scan Status",
                         body: "Security scan logs attached",
-                        
+                        attachmentsPattern: '**/*.log'
                     
                 }
             }
