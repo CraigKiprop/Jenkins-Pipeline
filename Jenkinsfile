@@ -87,8 +87,8 @@ def emailNotification(subject, body) {
         subject: subject,
         body: body,
         attachLog: true,
-        replyTo: "your-reply-email@example.com", // Replace with your reply-to email
-        from: "your-jenkins-email@example.com" // Replace with your Jenkins email
+        replyTo: "craigkorir@gmail", // Replace with your reply-to email
+        from: "craigkorir@gmail.com" // Replace with your Jenkins email
     )
 }
 
