@@ -43,16 +43,7 @@ pipeline {
             steps {
                 echo " Deploy to production using Ansible or other tools"
                 // sh 'ansible-playbook -i inventory/production deploy.yml'
-                post {
-        success {
-            // Send email notifications on success
-            emailext (
-                subject: "Pipeline Successful: ${env.JOB_NAME}",
-                body: "The pipeline has completed successfully.",
-                to: 'craigkori@email.com',
-                attachmentsPattern: '**/*.log'
-            )
-        }
+                
             }
         }
             
