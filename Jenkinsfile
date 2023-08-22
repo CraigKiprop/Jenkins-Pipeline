@@ -8,7 +8,7 @@ pipeline {
                 //bat 'mvn clean package'
                 // Add actual build steps here
             }
-		post {
+            post {
                 success {
                     emailNotification("Build Status: Success", "Build logs attached")
                 }
@@ -16,7 +16,6 @@ pipeline {
                     emailNotification("Build Status: Failure", "Build logs attached")
                 }
             }
-
         }
 
         stage('Unit and Integration Test') {
@@ -25,12 +24,11 @@ pipeline {
                 //sh 'mvn test'
                 // Add actual test steps here
             }
-post {
+            post {
                 always {
                     emailNotification("Unit and Integration Test Status", "Unit and Integration test logs attached")
                 }
             }
-            
         }
 
         stage('Code Analysis') {
@@ -39,6 +37,7 @@ post {
                 //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
+            // No email notification for Code Analysis stage
         }
 
         stage('Security Scan') {
@@ -46,16 +45,7 @@ post {
                 echo "Integrate a security scanning tool like OWASP ZAP"
                 // sh 'zap-cli --spider <your_app_url>'
             }
-            post {
-                always {
-                    
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Security Scan Status",
-                        body: "Security scan logs attached",
-                        
-				}
-                }
-            }
+            // No email notification for Security Scan stage
         }
 
         stage('Deploy to Staging') {
@@ -63,6 +53,7 @@ post {
                 echo "Run integration tests in the staging environment"
                 // sh 'mvn verify -Pstaging'
             }
+            // No email notification for Deploy to Staging stage
         }
 
         stage('Deploy to Production') {
@@ -70,6 +61,7 @@ post {
                 echo "Deploy to production using Ansible or other tools"
                 // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
+            // No email notification for Deploy to Production stage
         }
     }
 
@@ -87,8 +79,7 @@ def emailNotification(subject, body) {
         subject: subject,
         body: body,
         attachLog: true,
-        replyTo: "craigkorir@gmail", // Replace with your reply-to email
-        from: "craigkorir@gmail.com" // Replace with your Jenkins email
+        replyTo: "craigkorir@gmail.com", // Replace with your reply-to email
+        from: "your-jenkins-email@example.com" // Replace with your Jenkins email
     )
 }
-
