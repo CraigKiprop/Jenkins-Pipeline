@@ -8,8 +8,8 @@ pipeline {
                 echo "bat 'mvn clean package'"
                 // Add actual build steps here
             }
+           
             
-            }
         }
 
         stage('Unit and intergration Test') {
@@ -23,7 +23,8 @@ pipeline {
                         mail to: "craigkorir@gmail.com",
                         subject: "Build Status",
                         body: "build log attached"
-                }
+                } 
+           }
         }
 
         stage('Code Analysis') {
