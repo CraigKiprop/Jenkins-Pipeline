@@ -18,12 +18,11 @@ pipeline {
             }
             post {
                 always {
-                    
-                        mail to: "craigkorir@gmail.com",
+                    emailext (
+                        to: "craigkorir@gmail.com",
                         subject: "Unit and Integration Test Status",
                         body: "Unit and Integration test logs attached",
-                        
-                    
+                    )
                 }
             }
         }
@@ -43,12 +42,11 @@ pipeline {
             }
             post {
                 always {
-                
-                       mail to: "craigkorir@gmail.com",
+                    emailext (
+                        to: "craigkorir@gmail.com",
                         subject: "Security Scan Status",
                         body: "Security scan logs attached",
-                        
-                    
+                    )
                 }
             }
         }
