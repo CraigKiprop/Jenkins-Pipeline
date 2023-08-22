@@ -53,7 +53,7 @@ post {
                         subject: "Security Scan Status",
                         body: "Security scan logs attached",
                         
-                    
+				}
                 }
             }
         }
