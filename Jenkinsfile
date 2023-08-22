@@ -10,39 +10,47 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Unit and intergration Test') {
             steps {
-                echo "Unit tests"
-                echo "Integration tests"
+                echo "Use test automation tools for unit and intergration testUnit tests"
+                echo "sh 'mvn test'"
                 // Add actual test steps here
             }
         }
 
-        stage('Code Quality Check') {
+        stage('Code Analysis') {
             steps {
-                echo "Check the quality of the code."
+                echo "Integrate a code analysis tool like SonarQube"
+                echo "sh 'mvn sonar:sonar'"
                 // Add actual code quality check steps here
             }
         }
 
-        stage('Deploy') {
+        stage('Security Scan') {
             steps {
-                echo "Deploy the application to a testing environment (${env.TESTING_ENVIRONMENT})."
-                // Add actual deployment steps here
+                echo "Integrate a security scanning tool like OWASP ZAP)."
+                // sh 'zap-cli --spider <your_app_url>'
             }
         }
 
-        stage('Approval') {
+        stage('Deploy to Staging') {
             steps {
-                sleep(time: 10, unit: 'SECONDS')
+                echo "Run integration tests in the staging environment."
+                // sh 'mvn verify -Pstaging
             }
         }
-
-        stage('Deploy to Production') {
+            stage('Deploy to production') {
             steps {
-                echo "Deploy the code to the production environment (${env.PRODUCTION_ENVIRONMENT})."
-                // Add actual production deployment steps here
+                echo " Deploy to production using Ansible or other tools"
+                // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
+            post {
+                always{
+                    mail to: "craigkorir@gmail.com",
+                        subject: "build Status Email",
+                        body: "Build log attached"
+                }
+            }
     }
 }
