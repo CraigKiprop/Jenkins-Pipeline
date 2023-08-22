@@ -8,6 +8,13 @@ pipeline {
                 echo "bat 'mvn clean package'"
                 // Add actual build steps here
             }
+            post{
+                always{
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Build Status",
+                        body: "build log attached"
+                }
+            }
         }
 
         stage('Unit and intergration Test') {
