@@ -75,11 +75,13 @@ pipeline {
 
 def emailNotification(subject, body) {
     emailext (
-        to: 'craigkorir@gmail.com',
-        subject: subject,
-        body: body,
-        attachLog: true,
-        replyTo: "craigkorir@gmail.com", // Replace with your reply-to email
-        from: "your-jenkins-email@example.com" // Replace with your Jenkins email
-    )
+    to: 'craigkorir@gmail.com',
+    subject: subject,
+    body: body,
+    attachLog: true,
+    replyTo: "craigkorir@gmail.com",
+    from: "your-jenkins-email@example.com",
+    emailextBody: '''$DEFAULT_CONTENT\n\nSent from $JENKINS_URL\n$PROJECT_URL\nBuild: $BUILD_URL\n'''
+)
+
 }
