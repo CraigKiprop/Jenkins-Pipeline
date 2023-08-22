@@ -21,7 +21,6 @@ pipeline {
                         mail to: "craigkorir@gmail.com",
                         subject: "Unit and Integration Test Status",
                         body: "Unit and Integration test logs attached",
-                        attachmentsPattern: '**/*.log'
                 }
             }
         }
@@ -44,7 +43,7 @@ pipeline {
                         mail to: "craigkorir@gmail.com",
                         subject: "Unit and Integration Test Status",
                         body: "Unit and Integration test logs attached",
-                        attachmentsPattern: '**/*.log'
+                        
                 }
             }
         }
