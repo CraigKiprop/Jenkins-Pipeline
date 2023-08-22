@@ -1,17 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        DIRECTORY_PATH = "C:/Users/craim/OneDrive/Desktop/code.html" //directory path
-        TESTING_ENVIRONMENT = "Testing-environment" //name of your testing environment
-        PRODUCTION_ENVIRONMENT = "Craig Kiprop Korir"
-    }
-
-    stages {
+        stages {
         stage('Build') {
             steps {
-                echo "Fetch the source code from the directory path specified by C:/Users/craim/OneDrive/Desktop/code.html"
-                echo "Compile the code and generate any necessary artifacts."
+                echo "Use a build automation tool like maven"
+                echo "bat 'mvn clean package'"
                 // Add actual build steps here
             }
         }
