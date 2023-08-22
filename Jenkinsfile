@@ -8,14 +8,6 @@ pipeline {
                 //bat 'mvn clean package'
                 // Add actual build steps here
             }
-            post {
-                success {
-                    emailNotification("Build Status: Success", "Build logs attached")
-                }
-                failure {
-                    emailNotification("Build Status: Failure", "Build logs attached")
-                }
-            }
         }
 
         stage('Unit and Integration Test') {
@@ -26,7 +18,12 @@ pipeline {
             }
             post {
                 always {
-                    emailNotification("Unit and Integration Test Status", "Unit and Integration test logs attached")
+                    
+                       mail to: "craigkorir@gmail.com",
+                        subject: "Unit and Integration Test Status",
+                        body: "Unit and Integration test logs attached"
+                        
+                
                 }
             }
         }
@@ -37,7 +34,6 @@ pipeline {
                 //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
-            // No email notification for Code Analysis stage
         }
 
         stage('Security Scan') {
@@ -45,7 +41,16 @@ pipeline {
                 echo "Integrate a security scanning tool like OWASP ZAP"
                 // sh 'zap-cli --spider <your_app_url>'
             }
-            // No email notification for Security Scan stage
+            post {
+                always {
+                    
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Security Scan Status",
+                        body: "Security scan logs attached",
+                        
+                    
+                }
+            }
         }
 
         stage('Deploy to Staging') {
@@ -53,7 +58,6 @@ pipeline {
                 echo "Run integration tests in the staging environment"
                 // sh 'mvn verify -Pstaging'
             }
-            // No email notification for Deploy to Staging stage
         }
 
         stage('Deploy to Production') {
@@ -61,27 +65,8 @@ pipeline {
                 echo "Deploy to production using Ansible or other tools"
                 // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
-            // No email notification for Deploy to Production stage
         }
     }
 
-    post {
-        always {
-            // Archive artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-        }
-    }
-}
-
-def emailNotification(subject, body) {
-    emailext (
-    to: 'craigkorir@gmail.com',
-    subject: subject,
-    body: body,
-    attachLog: true,
-    replyTo: "craigkorir@gmail.com",
-    from: "your-jenkins-email@example.com",
-    emailextBody: '''$DEFAULT_CONTENT\n\nSent from $JENKINS_URL\n$PROJECT_URL\nBuild: $BUILD_URL\n'''
-)
-
+    
 }
