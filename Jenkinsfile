@@ -43,12 +43,12 @@ pipeline {
             }
             post {
                 always {
-                    emailext (
-                        to: "craigkorir@gmail.com",
+                    
+                        mail to: "craigkorir@gmail.com",
                         subject: "Security Scan Status",
                         body: "Security scan logs attached",
                         
-                    )
+                    
                 }
             }
         }
