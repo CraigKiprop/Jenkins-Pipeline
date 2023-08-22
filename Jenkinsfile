@@ -8,6 +8,15 @@ pipeline {
                 //bat 'mvn clean package'
                 // Add actual build steps here
             }
+		post {
+                success {
+                    emailNotification("Build Status: Success", "Build logs attached")
+                }
+                failure {
+                    emailNotification("Build Status: Failure", "Build logs attached")
+                }
+            }
+
         }
 
         stage('Unit and Integration Test') {
@@ -16,16 +25,12 @@ pipeline {
                 //sh 'mvn test'
                 // Add actual test steps here
             }
-            post {
+post {
                 always {
-                    
-                       mail to: "craigkorir@gmail.com",
-                        subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached"
-                        
-                
+                    emailNotification("Unit and Integration Test Status", "Unit and Integration test logs attached")
                 }
             }
+            
         }
 
         stage('Code Analysis') {
@@ -75,3 +80,15 @@ pipeline {
         }
     }
 }
+
+def emailNotification(subject, body) {
+    emailext (
+        to: 'craigkorir@gmail.com',
+        subject: subject,
+        body: body,
+        attachLog: true,
+        replyTo: "your-reply-email@example.com", // Replace with your reply-to email
+        from: "your-jenkins-email@example.com" // Replace with your Jenkins email
+    )
+}
+
