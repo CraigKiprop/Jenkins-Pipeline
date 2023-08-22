@@ -18,12 +18,12 @@ pipeline {
             }
             post {
                 always {
-                    emailext (
-                        to: "craigkorir@gmail.com",
+                    
+                       mail to: "craigkorir@gmail.com",
                         subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached",
-                        attachmentsPattern: '**/*.log'
-                    )
+                        body: "Unit and Integration test logs attached"
+                        
+                
                 }
             }
         }
