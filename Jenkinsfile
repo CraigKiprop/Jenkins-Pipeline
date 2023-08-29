@@ -24,12 +24,12 @@ pipeline {
                         def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
                         def emailBody = "Unit and Integration test ${currentBuild.result}"
 
-                        emailext(
-                            to: 'craigkorir@gmail.com',
+                        
+                            mail to: 'craigkorir@gmail.com',
                             subject: emailSubject,
                             body: emailBody
-                        ) {
-                            attach '**/*'
+                         {
+                            attach '**'
                         }
                     }
                 }
@@ -56,12 +56,12 @@ pipeline {
                         def emailSubject = "Security Scan Status - ${currentBuild.result}"
                         def emailBody = "Security scan ${currentBuild.result}"
 
-                        emailext(
-                            to: 'craigkorir@gmail.com',
+                        
+                            mail to: 'craigkorir@gmail.com',
                             subject: emailSubject,
                             body: emailBody
-                        ) {
-                            attach '**/*'
+                         {
+                            attach '**'
                         }
                     }
                 }
