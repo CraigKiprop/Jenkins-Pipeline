@@ -42,13 +42,17 @@ pipeline {
             post {
                 always {
                     script {
+                        // Create an empty file named 'empty.txt'
+                        def emptyFile = new File(env.WORKSPACE + '/empty.txt')
+                        emptyFile.createNewFile()
+                        
                         emailext subject: "Integration Test Status",
                                  body: "Integration test logs attached",
                                  mimeType: 'text/plain',
                                  to: "craigkorir@gmail.com",
-                                 attachmentsPattern: "**/*.log",
+                                 attachmentsPattern: '**/*.log',
                                  presendScript: """
-                                     msg.addAttachment(new File("${env.WORKSPACE}/target/*.log"))
+                                     msg.addAttachment(emptyFile)
                                  """
                     }
                 }
@@ -60,13 +64,6 @@ pipeline {
                 echo "Deploy to production using Ansible or other tools"
                 // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
-        }
-    }
-
-    post {
-        always {
-            // Archive artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
