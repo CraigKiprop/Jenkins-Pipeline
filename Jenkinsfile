@@ -2,26 +2,30 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout SCM') {
             steps {
-                echo "Building the code using Maven"
-                sh 'mvn clean package'
+                echo "Checking out the source code from SCM"
+                // Add SCM checkout steps here
             }
         }
 
-        stage('Unit and Integration Tests') {
+        stage('Build') {
             steps {
-                echo "Running unit tests"
-                sh 'mvn test' // Assuming Maven is configured for tests
-                
-                echo "Running integration tests"
-                // Add commands to run integration tests here
+                echo "Use a build automation tool like maven"
+                // Add actual build steps here
+            }
+        }
+
+        stage('Unit and Integration Test') {
+            steps {
+                echo "Use test automation tools for unit and integration tests"
+                // Add actual test steps here
             }
             post {
                 always {
                     archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
                     emailext (
-                        to: 'your-email@example.com',
+                        to: 'craigkorir@gmail.com',
                         subject: "Unit and Integration Test Status - ${currentBuild.result}",
                         body: "Unit and Integration test ${currentBuild.result}",
                         attachmentsPattern: '**/*.log',
@@ -34,21 +38,21 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                echo "Running code analysis using SonarQube"
-                // Add commands to run code analysis using SonarQube here
+                echo "Integrate a code analysis tool like SonarQube"
+                // Add actual code quality check steps here
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo "Performing security scan using OWASP ZAP"
-                // Add commands to run security scan using OWASP ZAP here
+                echo "Integrate a security scanning tool like OWASP ZAP"
+                // Add actual security scanning steps here
             }
             post {
                 always {
                     archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
                     emailext (
-                        to: 'your-email@example.com',
+                        to: 'craigkorir@gmail.com',
                         subject: "Security Scan Status - ${currentBuild.result}",
                         body: "Security scan ${currentBuild.result}",
                         attachmentsPattern: '**/*.log',
@@ -61,8 +65,8 @@ pipeline {
 
         stage('Deploy to Staging') {
             steps {
-                echo "Deploying to staging server (e.g., AWS EC2)"
-                // Add commands to deploy to staging server here
+                echo "Run integration tests in the staging environment"
+                // Add deployment and testing steps for staging environment
             }
         }
 
@@ -75,8 +79,8 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
-                echo "Deploying to production server (e.g., AWS EC2)"
-                // Add commands to deploy to production server here
+                echo "Deploying to production using Ansible or other tools"
+                // Add deployment steps for production environment
             }
         }
     }
