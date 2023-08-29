@@ -5,6 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
+                //bat 'mvn clean package'
                 // Add actual build steps here
             }
         }
@@ -12,13 +13,13 @@ pipeline {
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
+                //sh 'mvn test'
                 // Add actual test steps here
 
-                // Create an empty file as a temporary attachment
+                // Attach the temporary file as an artifact
                 script {
-                    def attachment = File.createTempFile("empty", ".txt")
-                    attachment.text = "" // make it empty
-                    currentBuild.rawBuild.addAction([attachment: attachment, filePath: attachment.name])
+                    writeFile file: 'empty.txt', text: '' // create an empty file
+                    archiveArtifacts artifacts: 'empty.txt', allowEmptyArchive: true
                 }
             }
         }
@@ -26,6 +27,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
+                //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
         }
@@ -33,21 +35,21 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
-                // Add actual security scan steps here
+                // sh 'zap-cli --spider <your_app_url>'
             }
         }
 
         stage('Deploy to Staging') {
             steps {
                 echo "Run integration tests in the staging environment"
-                // Add actual deploy to staging steps here
+                // sh 'mvn verify -Pstaging'
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to production using Ansible or other tools"
-                // Add actual deploy to production steps here
+                // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
     }
@@ -55,18 +57,17 @@ pipeline {
     post {
         always {
             script {
-                def attachmentsPattern = '**/*.log'
+                // Archive the empty.txt file as an artifact
+                archiveArtifacts artifacts: 'empty.txt', allowEmptyArchive: true
 
-                // Attach the temporary file created in the Unit and Integration Test stage
-                def attachmentAction = currentBuild.rawBuild.getAction([class: hudson.model.FileParameterValue])
-                if (attachmentAction != null) {
-                    emailext subject: "Integration Test Status",
+                // Email the attachment only if it exists
+                emailext subject: "Integration Test Status",
                          body: "Integration test logs attached",
                          mimeType: 'text/plain',
                          to: "craigkorir@gmail.com",
-                         attachmentsPattern: attachmentsPattern,
-                         attachments: attachmentAction.filePath
-                }
+                         attachmentsPattern: '**/empty.txt',
+                         replyTo: "",
+                         recipientProviders: [[$class: 'CulpritsRecipientProvider']]
             }
         }
     }
