@@ -46,11 +46,13 @@ pipeline {
             }
             post {
                 always {
-                    
+                    script{
+                        def attachmentsPattern = "**/*.log"
                         mail to: "craigkorir@gmail.com",
                         subject: "Security Scan Status",
                         body: "Security scan logs attached",
                         attachLog: true
+                    }
                     
                 }
             }
