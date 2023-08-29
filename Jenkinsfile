@@ -21,10 +21,16 @@ pipeline {
                 always {
                     script {
                         def attachmentsPattern = "**"
-                        mail to: "craigkorir@gmail.com",
-                                 subject: "Unit and Integration Test Status - ${currentBuild.result}",
-                                 body: "Unit and Integration test ${currentBuild.result}",
-                                 attachmentsPattern: attachmentsPattern
+                        def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
+                        def emailBody = "Unit and Integration test ${currentBuild.result}"
+
+                        emailext(
+                            to: 'craigkorir@gmail.com',
+                            subject: emailSubject,
+                            body: emailBody
+                        ) {
+                            attach '**/*'
+                        }
                     }
                 }
             }
@@ -47,10 +53,16 @@ pipeline {
                 always {
                     script {
                         def attachmentsPattern = "**"
-                        mail to: "craigkorir@gmail.com",
-                                 subject: "Security Scan Status - ${currentBuild.result}",
-                                 body: "Security scan ${currentBuild.result}",
-                                 attachmentsPattern: attachmentsPattern
+                        def emailSubject = "Security Scan Status - ${currentBuild.result}"
+                        def emailBody = "Security scan ${currentBuild.result}"
+
+                        emailext(
+                            to: 'craigkorir@gmail.com',
+                            subject: emailSubject,
+                            body: emailBody
+                        ) {
+                            attach '**/*'
+                        }
                     }
                 }
             }
@@ -69,14 +81,12 @@ pipeline {
                 // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
-        
-        stage('Debug') {
-            steps {
-                script {
-                    def workspaceFiles = findFiles(glob: '**', excludes: '')
-                    echo "Files in workspace: ${workspaceFiles.collect { it.path }}"
-                }
-            }
+    }
+
+    post {
+        always {
+            // Archive artifacts
+            archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
 }
