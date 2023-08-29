@@ -15,12 +15,18 @@ pipeline {
                 echo "Use test automation tools for unit and integration tests"
                 //sh 'mvn test'
                 // Add actual test steps here
-
-                // Create an empty file as a temporary attachment
-                script {
-                    def attachment = File.createTempFile("empty", ".txt")
-                    attachment.text = "" // make it empty
-                    currentBuild.rawBuild.addAction([attachment: attachment, filePath: attachment.name])
+                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+            }
+            post {
+                always {
+                    script{
+                    def attachmentsPattern = "**/*.log"
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Unit and Integration Test Status",
+                        body: "Unit and Integration test logs attached"
+                        attachLog: true
+                    }
+                    
                 }
             }
         }
@@ -37,6 +43,18 @@ pipeline {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
                 // sh 'zap-cli --spider <your_app_url>'
+            }
+            post {
+                always {
+                    script{
+                        def attachmentsPattern = "**/*.log"
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Security Scan Status",
+                        body: "Security scan logs attached",
+                        attachLog: true
+                    }
+                    
+                }
             }
         }
 
@@ -57,20 +75,8 @@ pipeline {
 
     post {
         always {
-            script {
-                def attachmentsPattern = '**/*.log'
-
-                // Attach the temporary file created in the Unit and Integration Test stage
-                def attachmentAction = currentBuild.rawBuild.getAction([class: hudson.model.FileParameterValue])
-                if (attachmentAction != null) {
-                    emailext subject: "Integration Test Status",
-                             body: "Integration test logs attached",
-                             mimeType: 'text/plain',
-                             to: "craigkorir@gmail.com",
-                             attachmentsPattern: attachmentsPattern,
-                             attachments: attachmentAction.filePath
-                }
-            }
+            // Archive artifacts
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
