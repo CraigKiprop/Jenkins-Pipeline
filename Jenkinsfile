@@ -49,7 +49,8 @@ pipeline {
                     
                         mail to: "craigkorir@gmail.com",
                         subject: "Security Scan Status",
-                        body: "Security scan logs attached"
+                        body: "Security scan logs attached",
+                        attachmentsPattern: "**/*.log"
                     
                 }
             }
