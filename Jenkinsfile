@@ -15,12 +15,17 @@ pipeline {
                 echo "Use test automation tools for unit and integration tests"
                 //sh 'mvn test'
                 // Add actual test steps here
-
-                // Create an empty file
-                writeFile file: 'empty.txt', text: ''
-
-                // Archive the empty.txt file as an artifact
-                archiveArtifacts artifacts: 'empty.txt', allowEmptyArchive: true
+                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+            }
+            post {
+                always {
+                    
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Unit and Integration Test Status",
+                        body: "Unit and Integration test logs attached"
+                       
+                    
+                }
             }
         }
 
@@ -36,6 +41,18 @@ pipeline {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
                 // sh 'zap-cli --spider <your_app_url>'
+            }
+            post {
+                always {
+                   
+                       
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Security Scan Status",
+                        body: "Security scan logs attached",
+                       
+                    
+                    
+                }
             }
         }
 
@@ -56,16 +73,8 @@ pipeline {
 
     post {
         always {
-            script {
-                // Email the attachment only if it exists
-                emailext subject: "Integration Test Status",
-                         body: "Integration test logs attached",
-                         mimeType: 'text/plain',
-                         to: "craigkorir@gmail.com",
-                         attachmentsPattern: '**/empty.txt',
-                         replyTo: "",
-                         recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-            }
+            // Archive artifacts
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
