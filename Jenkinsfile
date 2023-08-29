@@ -18,7 +18,7 @@ pipeline {
                 archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
 
                 // List .jar files in the workspace
-                def jarFiles = bat(script: "dir /S /B %WORKSPACE%\\*.jar", returnStdout: true).trim()
+                def jarFiles = bat(script: 'dir /S /B %WORKSPACE%\\*.jar', returnStdout: true).trim()
 
                 // Save the list of jar files to a text file
                 writeFile file: 'jar_files.txt', text: jarFiles
