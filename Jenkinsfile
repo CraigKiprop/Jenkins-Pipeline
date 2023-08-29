@@ -21,7 +21,7 @@ pipeline {
                 always {
                     script {
                         def attachmentsPattern = "**"
-                        emailext to: "craigkorir@gmail.com",
+                        mail to: "craigkorir@gmail.com",
                                  subject: "Unit and Integration Test Status - ${currentBuild.result}",
                                  body: "Unit and Integration test ${currentBuild.result}",
                                  attachmentsPattern: attachmentsPattern
@@ -47,7 +47,7 @@ pipeline {
                 always {
                     script {
                         def attachmentsPattern = "**"
-                        emailext to: "craigkorir@gmail.com",
+                        mail to: "craigkorir@gmail.com",
                                  subject: "Security Scan Status - ${currentBuild.result}",
                                  body: "Security scan ${currentBuild.result}",
                                  attachmentsPattern: attachmentsPattern
