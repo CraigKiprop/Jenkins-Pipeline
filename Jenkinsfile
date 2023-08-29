@@ -16,11 +16,11 @@ pipeline {
                 //sh 'mvn test'
                 // Add actual test steps here
 
-                // Attach the temporary file as an artifact
-                script {
-                    writeFile file: 'empty.txt', text: '' // create an empty file
-                    archiveArtifacts artifacts: 'empty.txt', allowEmptyArchive: true
-                }
+                // Create an empty file
+                writeFile file: 'empty.txt', text: ''
+
+                // Archive the empty.txt file as an artifact
+                archiveArtifacts artifacts: 'empty.txt', allowEmptyArchive: true
             }
         }
 
@@ -57,9 +57,6 @@ pipeline {
     post {
         always {
             script {
-                // Archive the empty.txt file as an artifact
-                archiveArtifacts artifacts: 'empty.txt', allowEmptyArchive: true
-
                 // Email the attachment only if it exists
                 emailext subject: "Integration Test Status",
                          body: "Integration test logs attached",
