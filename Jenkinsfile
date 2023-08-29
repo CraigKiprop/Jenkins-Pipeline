@@ -69,12 +69,14 @@ pipeline {
                 // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
-    }
-
-    post {
-        always {
-            // Archive artifacts
-            archiveArtifacts artifacts: '**', allowEmptyArchive: true
+        
+        stage('Debug') {
+            steps {
+                script {
+                    def workspaceFiles = findFiles(glob: '**', excludes: '')
+                    echo "Files in workspace: ${workspaceFiles.collect { it.path }}"
+                }
+            }
         }
     }
 }
