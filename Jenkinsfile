@@ -74,7 +74,7 @@ pipeline {
     post {
         always {
             // Archive artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
 }
