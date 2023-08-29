@@ -2,20 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout SCM') {
             steps {
-                echo "Building the code using Maven"
-                sh 'mvn clean package'
+                echo "Checking out the source code from SCM"
+                // Add SCM checkout steps here
             }
         }
 
-        stage('Unit and Integration Tests') {
+        stage('Build') {
             steps {
-                echo "Running unit tests"
-                sh 'mvn test' // Assuming Maven is configured for tests
-                
-                echo "Running integration tests"
-                // Add commands to run integration tests here
+                echo "Building the project using a build automation tool like Maven"
+                // Add actual build steps here
+            }
+        }
+
+        stage('Unit and Integration Test') {
+            steps {
+                echo "Running unit and integration tests using test automation tools"
+                // Add actual test steps here
             }
             post {
                 always {
@@ -34,15 +38,15 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                echo "Running code analysis using SonarQube"
-                // Add commands to run code analysis using SonarQube here
+                echo "Running code analysis using tools like SonarQube"
+                // Add actual code quality check steps here
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo "Performing security scan using OWASP ZAP"
-                // Add commands to run security scan using OWASP ZAP here
+                echo "Running security scanning using tools like OWASP ZAP"
+                // Add actual security scanning steps here
             }
             post {
                 always {
@@ -61,22 +65,22 @@ pipeline {
 
         stage('Deploy to Staging') {
             steps {
-                echo "Deploying to staging server (e.g., AWS EC2)"
-                // Add commands to deploy to staging server here
+                echo "Deploying to the staging environment"
+                // Add deployment and testing steps for the staging environment
             }
         }
 
         stage('Integration Tests on Staging') {
             steps {
-                echo "Running integration tests on staging"
-                // Add commands to run integration tests on staging environment here
+                echo "Running integration tests on the staging environment"
+                // Add commands to run integration tests on the staging environment here
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo "Deploying to production server (e.g., AWS EC2)"
-                // Add commands to deploy to production server here
+                echo "Deploying to the production environment using deployment tools like Ansible"
+                // Add deployment steps for the production environment
             }
         }
     }
