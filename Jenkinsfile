@@ -2,92 +2,91 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout SCM') {
-            steps {
-                echo "Checking out the source code from SCM"
-                // Add SCM checkout steps here
-            }
-        }
-
         stage('Build') {
             steps {
-                echo "Building the project using a build automation tool like Maven"
+                echo "Use a build automation tool like maven"
+                //bat 'mvn clean package'
                 // Add actual build steps here
             }
         }
 
         stage('Unit and Integration Test') {
             steps {
-                echo "Running unit and integration tests using test automation tools"
+                echo "Use test automation tools for unit and integration tests"
+                //sh 'mvn test'
                 // Add actual test steps here
+                archiveArtifacts artifacts: '**', allowEmptyArchive: true
             }
             post {
                 always {
-                    archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
-                    emailext (
-                        to: 'craigkorir@gmail.com',
-                        subject: "Unit and Integration Test Status - ${currentBuild.result}",
-                        body: "Unit and Integration test ${currentBuild.result}",
-                        attachmentsPattern: '**/*.log',
-                        mimeType: 'text/plain',
-                        recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-                    )
+                    script {
+                        def attachmentsPattern = "**"
+                        def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
+                        def emailBody = "Unit and Integration test ${currentBuild.result}"
+
+                        
+                        {mail to: 'craigkorir@gmail.com',
+                            subject: emailSubject,
+                            body: emailBody}
+                         {
+                            attach '**'
+                        }
+                    }
                 }
             }
         }
 
         stage('Code Analysis') {
             steps {
-                echo "Running code analysis using tools like SonarQube"
+                echo "Integrate a code analysis tool like SonarQube"
+                //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo "Running security scanning using tools like OWASP ZAP"
-                // Add actual security scanning steps here
+                echo "Integrate a security scanning tool like OWASP ZAP"
+                // sh 'zap-cli --spider <your_app_url>'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
-                    emailext (
-                        to: 'craigkorir@gmail.com',
-                        subject: "Security Scan Status - ${currentBuild.result}",
-                        body: "Security scan ${currentBuild.result}",
-                        attachmentsPattern: '**/*.log',
-                        mimeType: 'text/plain',
-                        recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-                    )
+                    script {
+                        def attachmentsPattern = "**"
+                        def emailSubject = "Security Scan Status - ${currentBuild.result}"
+                        def emailBody = "Security scan ${currentBuild.result}"
+
+                        
+                            mail to: 'craigkorir@gmail.com',
+                            subject: emailSubject,
+                            body: emailBody
+                         {
+                            attach '**'
+                        }
+                    }
                 }
             }
         }
 
         stage('Deploy to Staging') {
             steps {
-                echo "Deploying to the staging environment"
-                // Add deployment and testing steps for the staging environment
-            }
-        }
-
-        stage('Integration Tests on Staging') {
-            steps {
-                echo "Running integration tests on the staging environment"
-                // Add commands to run integration tests on the staging environment here
+                echo "Run integration tests in the staging environment"
+                // sh 'mvn verify -Pstaging'
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo "Deploying to the production environment using deployment tools like Ansible"
-                // Add deployment steps for the production environment
+                echo "Deploy to production using Ansible or other tools"
+                // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+            // Archive artifacts
+            archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
 }
