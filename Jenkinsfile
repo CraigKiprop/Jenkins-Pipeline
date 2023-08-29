@@ -5,26 +5,35 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
-                //bat 'mvn clean package'
-                // Add actual build steps here
+                // Replace with your actual build commands
             }
         }
 
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
-                //sh 'mvn test'
-                // Add actual test steps here
-                archiveArtifacts artifacts: '**', allowEmptyArchive: true
+                // Run your test automation commands here
+                
+                // Archive necessary artifacts
+                archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+                
+                // List .jar files in the workspace
+                def jarFiles = sh(script: "find ${WORKSPACE} -name '*.jar'", returnStdout: true).trim()
+                
+                // Save the list of jar files to a text file
+                writeFile file: 'jar_files.txt', text: jarFiles
             }
             post {
                 always {
                     script {
-                        def attachmentsPattern = "**"
-                        mail to: "craigkorir@gmail.com",
+                        // Read the list of jar files from the text file
+                        def jarFiles = readFile('jar_files.txt')
+                        
+                        emailext body: "Unit and Integration test ${currentBuild.result}\n\nJar files attached.",
+                                 mimeType: 'text/plain',
                                  subject: "Unit and Integration Test Status - ${currentBuild.result}",
-                                 body: "Unit and Integration test ${currentBuild.result}",
-                                 attachmentsPattern: attachmentsPattern
+                                 to: 'craigkorir@gmail.com',
+                                 attachmentsPattern: jarFiles
                     }
                 }
             }
@@ -33,24 +42,19 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
-                //sh 'mvn sonar:sonar'
-                // Add actual code quality check steps here
+                // Replace with your actual code analysis commands
             }
         }
 
         stage('Security Scan') {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
-                // sh 'zap-cli --spider <your_app_url>'
+                // Replace with your actual security scan commands
             }
             post {
                 always {
                     script {
-                        def attachmentsPattern = "**"
-                        mail to: "craigkorir@gmail.com",
-                                 subject: "Security Scan Status - ${currentBuild.result}",
-                                 body: "Security scan ${currentBuild.result}",
-                                 attachmentsPattern: attachmentsPattern
+                        // Similar email configuration as Unit and Integration Test stage
                     }
                 }
             }
@@ -59,14 +63,14 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo "Run integration tests in the staging environment"
-                // sh 'mvn verify -Pstaging'
+                // Replace with your actual deployment and testing commands for staging
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to production using Ansible or other tools"
-                // sh 'ansible-playbook -i inventory/production deploy.yml'
+                // Replace with your actual deployment commands for production
             }
         }
     }
@@ -74,7 +78,7 @@ pipeline {
     post {
         always {
             // Archive artifacts
-            archiveArtifacts artifacts: '**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
