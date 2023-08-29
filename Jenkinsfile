@@ -13,13 +13,13 @@ pipeline {
             steps {
                 echo "Use test automation tools for unit and integration tests"
                 // Run your test automation commands here
-                
+
                 // Archive necessary artifacts
                 archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-                
+
                 // List .jar files in the workspace
-                def jarFiles = sh(script: "find ${WORKSPACE} -name '*.jar'", returnStdout: true).trim()
-                
+                def jarFiles = bat(script: "dir /S /B %WORKSPACE%\\*.jar", returnStdout: true).trim()
+
                 // Save the list of jar files to a text file
                 writeFile file: 'jar_files.txt', text: jarFiles
             }
@@ -28,7 +28,7 @@ pipeline {
                     script {
                         // Read the list of jar files from the text file
                         def jarFiles = readFile('jar_files.txt')
-                        
+
                         emailext body: "Unit and Integration test ${currentBuild.result}\n\nJar files attached.",
                                  mimeType: 'text/plain',
                                  subject: "Unit and Integration Test Status - ${currentBuild.result}",
