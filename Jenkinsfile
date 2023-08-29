@@ -15,12 +15,14 @@ pipeline {
                 echo "Use test automation tools for unit and integration tests"
                 //sh 'mvn test'
                 // Add actual test steps here
+                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
             }
             post {
                 always {
                         mail to: "craigkorir@gmail.com",
                         subject: "Unit and Integration Test Status",
                         body: "Unit and Integration test logs attached"
+                        attachmentsPattern: '**/*.log'
                     
                 }
             }
