@@ -2,10 +2,16 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                echo "Checking out the source code from SCM"
+                // Add SCM checkout steps here
+            }
+        }
+
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
-                //bat 'mvn clean package'
                 // Add actual build steps here
             }
         }
@@ -13,24 +19,17 @@ pipeline {
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
-                //sh 'mvn test'
                 // Add actual test steps here
-                archiveArtifacts artifacts: ['**/*.log', 'Jenkinsfile'], allowEmptyArchive: true
             }
             post {
                 always {
-                    script {
-                        def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
-                        def emailBody = "Unit and Integration test ${currentBuild.result}"
-                        def attachmentsPattern = '**/*.log'
-
-                        emailext (
-                            subject: emailSubject,
-                            body: emailBody,
-                            to: 'craigkorir@gmail.com',
-                            attachmentsPattern: attachmentsPattern
-                        )
-                    }
+                    archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+                    emailext (
+                        to: 'craigkorir@gmail.com',
+                        subject: "Unit and Integration Test Status - ${currentBuild.result}",
+                        body: "Unit and Integration test ${currentBuild.result}",
+                        attachmentsPattern: '**/*.log'
+                    )
                 }
             }
         }
@@ -38,7 +37,6 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
-                //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
         }
@@ -46,22 +44,15 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
-                // sh 'zap-cli --spider <your_app_url>'
+                // Add security scan steps here
             }
             post {
                 always {
-                    script {
-                        def emailSubject = "Security Scan Status - ${currentBuild.result}"
-                        def emailBody = "Security scan ${currentBuild.result}"
-                        def attachmentsPattern = '**/*.log'
-
-                        emailext (
-                            subject: emailSubject,
-                            body: emailBody,
-                            to: 'craigkorir@gmail.com',
-                            attachmentsPattern: attachmentsPattern
-                        )
-                    }
+                    emailext (
+                        to: 'craigkorir@gmail.com',
+                        subject: "Security Scan Status - ${currentBuild.result}",
+                        body: "Security scan ${currentBuild.result}"
+                    )
                 }
             }
         }
@@ -69,14 +60,14 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo "Run integration tests in the staging environment"
-                // sh 'mvn verify -Pstaging'
+                // Add deployment to staging steps here
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to production using Ansible or other tools"
-                // sh 'ansible-playbook -i inventory/production deploy.yml'
+                // Add deployment to production steps here
             }
         }
     }
@@ -84,7 +75,7 @@ pipeline {
     post {
         always {
             // Archive artifacts
-            archiveArtifacts artifacts: '**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
         }
     }
 }
