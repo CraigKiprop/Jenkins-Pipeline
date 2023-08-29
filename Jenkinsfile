@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
-                // bat 'mvn clean package'
+                //bat 'mvn clean package'
                 // Add actual build steps here
             }
         }
@@ -13,20 +13,22 @@ pipeline {
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
-                // sh 'mvn test'
+                //sh 'mvn test'
                 // Add actual test steps here
+                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
             }
             post {
                 always {
                     script {
                         def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
                         def emailBody = "Unit and Integration test ${currentBuild.result}"
-                        
-                        emailext(
-                            to: 'craigkorir@gmail.com',
+                        def attachmentsPattern = '**/*.log'
+
+                        emailext (
                             subject: emailSubject,
                             body: emailBody,
-                            attachmentsPattern: '**/*'
+                            to: 'craigkorir@gmail.com',
+                            attachmentsPattern: attachmentsPattern
                         )
                     }
                 }
@@ -36,7 +38,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
-                // sh 'mvn sonar:sonar'
+                //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
         }
@@ -51,12 +53,11 @@ pipeline {
                     script {
                         def emailSubject = "Security Scan Status - ${currentBuild.result}"
                         def emailBody = "Security scan ${currentBuild.result}"
-                        
-                        emailext(
-                            to: 'craigkorir@gmail.com',
+
+                        emailext (
                             subject: emailSubject,
                             body: emailBody,
-                            attachmentsPattern: '**/*'
+                            to: 'craigkorir@gmail.com'
                         )
                     }
                 }
@@ -80,8 +81,7 @@ pipeline {
 
     post {
         always {
-            // Archive artifacts
-            archiveArtifacts artifacts: '**/*', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
 }
