@@ -19,18 +19,14 @@ pipeline {
             }
             post {
                 always {
-                    script {
-                        def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
-                        def emailBody = "Unit and Integration test ${currentBuild.result}"
-                        def attachmentsPattern = '**/*.log'
-
-                        emailext (
-                            subject: emailSubject,
-                            body: emailBody,
-                            to: 'craigkorir@gmail.com',
-                            attachmentsPattern: attachmentsPattern
-                        )
+                    script{
+                    def attachmentsPattern = "**/*.log"
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Unit and Integration Test Status",
+                        body: "Unit and Integration test logs attached"
+                        attachLog: true
                     }
+                    
                 }
             }
         }
@@ -50,16 +46,14 @@ pipeline {
             }
             post {
                 always {
-                    script {
-                        def emailSubject = "Security Scan Status - ${currentBuild.result}"
-                        def emailBody = "Security scan ${currentBuild.result}"
-
-                        emailext (
-                            subject: emailSubject,
-                            body: emailBody,
-                            to: 'craigkorir@gmail.com'
-                        )
+                    script{
+                        def attachmentsPattern = "**/*.log"
+                        mail to: "craigkorir@gmail.com",
+                        subject: "Security Scan Status",
+                        body: "Security scan logs attached",
+                        attachLog: true
                     }
+                    
                 }
             }
         }
@@ -81,7 +75,8 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: '**', allowEmptyArchive: true
+            // Archive artifacts
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
