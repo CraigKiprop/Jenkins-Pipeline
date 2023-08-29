@@ -17,18 +17,6 @@ pipeline {
                 // Add actual test steps here
                 archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
             }
-            post {
-                always {
-                    script{
-                    def attachmentsPattern = "**/*.log"
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached"
-                        attachLog: true
-                    }
-                    
-                }
-            }
         }
 
         stage('Code Analysis') {
@@ -44,24 +32,26 @@ pipeline {
                 echo "Integrate a security scanning tool like OWASP ZAP"
                 // sh 'zap-cli --spider <your_app_url>'
             }
-            post {
-                always {
-                    script{
-                        def attachmentsPattern = "**/*.log"
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Security Scan Status",
-                        body: "Security scan logs attached",
-                        attachLog: true
-                    }
-                    
-                }
-            }
         }
 
         stage('Deploy to Staging') {
             steps {
                 echo "Run integration tests in the staging environment"
                 // sh 'mvn verify -Pstaging'
+            }
+            post {
+                always {
+                    script {
+                        emailext subject: "Integration Test Status",
+                                 body: "Integration test logs attached",
+                                 mimeType: 'text/plain',
+                                 to: "craigkorir@gmail.com",
+                                 attachmentsPattern: "**/*.log",
+                                 presendScript: """
+                                     msg.addAttachment(new File("${env.WORKSPACE}/target/*.log"))
+                                 """
+                    }
+                }
             }
         }
 
