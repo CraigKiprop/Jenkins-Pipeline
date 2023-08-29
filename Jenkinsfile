@@ -15,12 +15,12 @@ pipeline {
                 echo "Use test automation tools for unit and integration tests"
                 //sh 'mvn test'
                 // Add actual test steps here
-                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+                archiveArtifacts artifacts: '**', allowEmptyArchive: true
             }
             post {
                 always {
                     script {
-                        def attachmentsPattern = "**/*.log"
+                        def attachmentsPattern = "**"
                         emailext to: "craigkorir@gmail.com",
                                  subject: "Unit and Integration Test Status - ${currentBuild.result}",
                                  body: "Unit and Integration test ${currentBuild.result}",
@@ -46,7 +46,7 @@ pipeline {
             post {
                 always {
                     script {
-                        def attachmentsPattern = "**/*.log"
+                        def attachmentsPattern = "**"
                         emailext to: "craigkorir@gmail.com",
                                  subject: "Security Scan Status - ${currentBuild.result}",
                                  body: "Security scan ${currentBuild.result}",
