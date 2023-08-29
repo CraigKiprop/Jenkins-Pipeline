@@ -19,12 +19,13 @@ pipeline {
             }
             post {
                 always {
-                    
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached"
-                       
-                    
+                    script {
+                        def attachmentsPattern = "**/*.log"
+                        emailext to: "craigkorir@gmail.com",
+                                 subject: "Unit and Integration Test Status - ${currentBuild.result}",
+                                 body: "Unit and Integration test ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
+                    }
                 }
             }
         }
@@ -44,14 +45,13 @@ pipeline {
             }
             post {
                 always {
-                   
-                       
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Security Scan Status",
-                        body: "Security scan logs attached"
-                       
-                    
-                    
+                    script {
+                        def attachmentsPattern = "**/*.log"
+                        emailext to: "craigkorir@gmail.com",
+                                 subject: "Security Scan Status - ${currentBuild.result}",
+                                 body: "Security scan ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
+                    }
                 }
             }
         }
