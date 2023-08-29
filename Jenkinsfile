@@ -5,35 +5,26 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
-                // Replace with your actual build commands
+                //bat 'mvn clean package'
+                // Add actual build steps here
             }
         }
 
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
-                // Run your test automation commands here
-
-                // Archive necessary artifacts
-                archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-
-                // List .jar files in the workspace
-                def jarFiles = bat(script: 'dir /S /B %WORKSPACE%\\*.jar', returnStdout: true).trim()
-
-                // Save the list of jar files to a text file
-                writeFile file: 'jar_files.txt', text: jarFiles
+                //sh 'mvn test'
+                // Add actual test steps here
+                archiveArtifacts artifacts: '**', allowEmptyArchive: true
             }
             post {
                 always {
                     script {
-                        // Read the list of jar files from the text file
-                        def jarFiles = readFile('jar_files.txt')
-
-                        emailext body: "Unit and Integration test ${currentBuild.result}\n\nJar files attached.",
-                                 mimeType: 'text/plain',
+                        def attachmentsPattern = "**"
+                        mail to: "craigkorir@gmail.com",
                                  subject: "Unit and Integration Test Status - ${currentBuild.result}",
-                                 to: 'craigkorir@gmail.com',
-                                 attachmentsPattern: jarFiles
+                                 body: "Unit and Integration test ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
                     }
                 }
             }
@@ -42,19 +33,24 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
-                // Replace with your actual code analysis commands
+                //sh 'mvn sonar:sonar'
+                // Add actual code quality check steps here
             }
         }
 
         stage('Security Scan') {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
-                // Replace with your actual security scan commands
+                // sh 'zap-cli --spider <your_app_url>'
             }
             post {
                 always {
                     script {
-                        // Similar email configuration as Unit and Integration Test stage
+                        def attachmentsPattern = "**"
+                        mail to: "craigkorir@gmail.com",
+                                 subject: "Security Scan Status - ${currentBuild.result}",
+                                 body: "Security scan ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
                     }
                 }
             }
@@ -63,14 +59,14 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo "Run integration tests in the staging environment"
-                // Replace with your actual deployment and testing commands for staging
+                // sh 'mvn verify -Pstaging'
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to production using Ansible or other tools"
-                // Replace with your actual deployment commands for production
+                // sh 'ansible-playbook -i inventory/production deploy.yml'
             }
         }
     }
@@ -78,7 +74,7 @@ pipeline {
     post {
         always {
             // Archive artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
 }
