@@ -15,18 +15,17 @@ pipeline {
                 echo "Use test automation tools for unit and integration tests"
                 //sh 'mvn test'
                 // Add actual test steps here
-                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+                archiveArtifacts artifacts: '**', allowEmptyArchive: true
             }
             post {
                 always {
-                    script{
-                    def attachmentsPattern = "**/*.log"
+                    script {
+                        def attachmentsPattern = "**"
                         mail to: "craigkorir@gmail.com",
-                        subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached"
-                        attachLog: true
+                                 subject: "Unit and Integration Test Status - ${currentBuild.result}",
+                                 body: "Unit and Integration test ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
                     }
-                    
                 }
             }
         }
@@ -46,14 +45,13 @@ pipeline {
             }
             post {
                 always {
-                    script{
-                        def attachmentsPattern = "**/*.log"
+                    script {
+                        def attachmentsPattern = "**"
                         mail to: "craigkorir@gmail.com",
-                        subject: "Security Scan Status",
-                        body: "Security scan logs attached",
-                        attachLog: true
+                                 subject: "Security Scan Status - ${currentBuild.result}",
+                                 body: "Security scan ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
                     }
-                    
                 }
             }
         }
@@ -76,7 +74,7 @@ pipeline {
     post {
         always {
             // Archive artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
 }
