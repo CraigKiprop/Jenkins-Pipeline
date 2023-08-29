@@ -25,9 +25,9 @@ pipeline {
                         def emailBody = "Unit and Integration test ${currentBuild.result}"
 
                         
-                            mail to: 'craigkorir@gmail.com',
+                        {mail to: 'craigkorir@gmail.com',
                             subject: emailSubject,
-                            body: emailBody
+                            body: emailBody}
                          {
                             attach '**'
                         }
