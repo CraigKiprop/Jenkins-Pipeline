@@ -5,7 +5,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Use a build automation tool like maven"
-                //bat 'mvn clean package'
                 // Add actual build steps here
             }
         }
@@ -13,20 +12,13 @@ pipeline {
         stage('Unit and Integration Test') {
             steps {
                 echo "Use test automation tools for unit and integration tests"
-                //sh 'mvn test'
                 // Add actual test steps here
-                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
-            }
-            post {
-                always {
-                    script{
-                    def attachmentsPattern = "**/*.log"
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Unit and Integration Test Status",
-                        body: "Unit and Integration test logs attached"
-                        attachLog: true
-                    }
-                    
+
+                // Create an empty file as a temporary attachment
+                script {
+                    def attachment = File.createTempFile("empty", ".txt")
+                    attachment.text = "" // make it empty
+                    currentBuild.rawBuild.addAction([attachment: attachment, filePath: attachment.name])
                 }
             }
         }
@@ -34,7 +26,6 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo "Integrate a code analysis tool like SonarQube"
-                //sh 'mvn sonar:sonar'
                 // Add actual code quality check steps here
             }
         }
@@ -42,41 +33,41 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo "Integrate a security scanning tool like OWASP ZAP"
-                // sh 'zap-cli --spider <your_app_url>'
-            }
-            post {
-                always {
-                    script{
-                        def attachmentsPattern = "**/*.log"
-                        mail to: "craigkorir@gmail.com",
-                        subject: "Security Scan Status",
-                        body: "Security scan logs attached",
-                        attachLog: true
-                    }
-                    
-                }
+                // Add actual security scan steps here
             }
         }
 
         stage('Deploy to Staging') {
             steps {
                 echo "Run integration tests in the staging environment"
-                // sh 'mvn verify -Pstaging'
+                // Add actual deploy to staging steps here
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to production using Ansible or other tools"
-                // sh 'ansible-playbook -i inventory/production deploy.yml'
+                // Add actual deploy to production steps here
             }
         }
     }
 
     post {
         always {
-            // Archive artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            script {
+                def attachmentsPattern = '**/*.log'
+
+                // Attach the temporary file created in the Unit and Integration Test stage
+                def attachmentAction = currentBuild.rawBuild.getAction([class: hudson.model.FileParameterValue])
+                if (attachmentAction != null) {
+                    emailext subject: "Integration Test Status",
+                         body: "Integration test logs attached",
+                         mimeType: 'text/plain',
+                         to: "craigkorir@gmail.com",
+                         attachmentsPattern: attachmentsPattern,
+                         attachments: attachmentAction.filePath
+                }
+            }
         }
     }
 }
