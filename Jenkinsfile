@@ -22,7 +22,7 @@ pipeline {
                     script {
                         def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
                         def emailBody = "Unit and Integration test ${currentBuild.result}"
-                        def attachmentsPattern = "**/*.log" // Modify this pattern to match your log files
+                        def attachmentsPattern = "**" // Modify this pattern to match your log files
 
                         emailext (
                             subject: emailSubject,
