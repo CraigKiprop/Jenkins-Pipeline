@@ -23,7 +23,7 @@ pipeline {
                         def emailBody = "Unit and Integration test ${currentBuild.result}"
                         
                         emailext(
-                            mail to: 'craigkorir@gmail.com',
+                            to: 'craigkorir@gmail.com',
                             subject: emailSubject,
                             body: emailBody,
                             attachmentsPattern: '**/*'
@@ -53,7 +53,7 @@ pipeline {
                         def emailBody = "Security scan ${currentBuild.result}"
                         
                         emailext(
-                            mail to: 'craigkorir@gmail.com',
+                            to: 'craigkorir@gmail.com',
                             subject: emailSubject,
                             body: emailBody,
                             attachmentsPattern: '**/*'
