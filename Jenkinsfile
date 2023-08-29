@@ -20,11 +20,16 @@ pipeline {
             post {
                 always {
                     script {
-                        def attachmentsPattern = "**"
-                        mail to: "craigkorir@gmail.com",
-                                 subject: "Unit and Integration Test Status - ${currentBuild.result}",
-                                 body: "Unit and Integration test ${currentBuild.result}",
-                                 attachmentsPattern: attachmentsPattern
+                        def emailSubject = "Unit and Integration Test Status - ${currentBuild.result}"
+                        def emailBody = "Unit and Integration test ${currentBuild.result}"
+                        def attachmentsPattern = "**/*.log" // Modify this pattern to match your log files
+
+                        emailext (
+                            subject: emailSubject,
+                            body: emailBody,
+                            to: 'craigkorir@gmail.com',
+                            attachmentsPattern: attachmentsPattern
+                        )
                     }
                 }
             }
@@ -46,11 +51,16 @@ pipeline {
             post {
                 always {
                     script {
-                        def attachmentsPattern = "**"
-                        mail to: "craigkorir@gmail.com",
-                                 subject: "Security Scan Status - ${currentBuild.result}",
-                                 body: "Security scan ${currentBuild.result}",
-                                 attachmentsPattern: attachmentsPattern
+                        def emailSubject = "Security Scan Status - ${currentBuild.result}"
+                        def emailBody = "Security scan ${currentBuild.result}"
+                        def attachmentsPattern = "**" // Modify this pattern to match your log files
+
+                        emailext (
+                            subject: emailSubject,
+                            body: emailBody,
+                            to: 'craigkorir@gmail.com',
+                            attachmentsPattern: attachmentsPattern
+                        )
                     }
                 }
             }
@@ -73,7 +83,6 @@ pipeline {
 
     post {
         always {
-            // Archive artifacts
             archiveArtifacts artifacts: '**', allowEmptyArchive: true
         }
     }
