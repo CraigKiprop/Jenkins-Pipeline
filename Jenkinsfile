@@ -11,23 +11,24 @@ pipeline {
         }
 
         stage('Unit and Integration Test') {
-    steps {
-        echo "Use test automation tools for unit and integration tests"
-        // Add actual test steps here
-        archiveArtifacts artifacts: '**', allowEmptyArchive: true
-    }
-    post {
-        always {
-            emailext(
-                subject: "Unit and Integration Test Status - ${currentBuild.result}",
-                body: "Unit and Integration test ${currentBuild.result}",
-                to: "craigkorir@gmail.com",
-                attachmentsPattern: '**',  // Attach all files
-                attachLog: true
-            )
+            steps {
+                echo "Use test automation tools for unit and integration tests"
+                //sh 'mvn test'
+                // Add actual test steps here
+                archiveArtifacts artifacts: '**', allowEmptyArchive: true
+            }
+            post {
+                always {
+                    script {
+                        def attachmentsPattern = "**"
+                        mail to: "craigkorir@gmail.com",
+                                 subject: "Unit and Integration Test Status - ${currentBuild.result}",
+                                 body: "Unit and Integration test ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
+                    }
+                }
+            }
         }
-    }
-}
 
         stage('Code Analysis') {
             steps {
@@ -38,22 +39,22 @@ pipeline {
         }
 
         stage('Security Scan') {
-    steps {
-        echo "Integrate a security scanning tool like OWASP ZAP"
-        // Add security scan steps here
-    }
-    post {
-        always {
-            emailext(
-                subject: "Security Scan Status - ${currentBuild.result}",
-                body: "Security scan ${currentBuild.result}",
-                to: "craigkorir@gmail.com",
-                attachmentsPattern: '**',  // Attach all files
-                attachLog: true
-            )
+            steps {
+                echo "Integrate a security scanning tool like OWASP ZAP"
+                // sh 'zap-cli --spider <your_app_url>'
+            }
+            post {
+                always {
+                    script {
+                        def attachmentsPattern = "**"
+                        mail to: "craigkorir@gmail.com",
+                                 subject: "Security Scan Status - ${currentBuild.result}",
+                                 body: "Security scan ${currentBuild.result}",
+                                 attachmentsPattern: attachmentsPattern
+                    }
+                }
+            }
         }
-    }
-}
 
         stage('Deploy to Staging') {
             steps {
